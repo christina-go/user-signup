@@ -1,18 +1,48 @@
 from flask import Flask, request, redirect, render_template
 import cgi
-import helper_functions
+from helper_functions import text_len, no_spaces, special_chars
 
 app = Flask(__name__)
 
 app.config['DEBUG'] = True  
 
-def input_validation(userEmail, userName, password, passwordConfirmation):
-  if email_validation(userEmail) and username_validation(userName) and password_validation(password) and password_match(password,passwordConfirmation) == True:
+def username_validation(username):
+
+  if text_len(username) and no_spaces(username) == True:
+      
+    return True
+  else:
+
+    return False
+
+def password_validation(password):
+
+  if text_len(password) and no_spaces(password) == True:
+    return True
+
+  else:
+    return False
+
+def password_match(password, passwordConfirmation):
+    if passwordConfirmation == '':
+        return False 
+    
+    elif password == passwordConfirmation:
+        return True   
+
+    else:
+        return False 
+
+def email_validation(userEmail):
+
+  if userEmail == '':
+      return True
+  
+  elif text_len(userEmail) and no_spaces(userEmail) and special_chars(userEmail) ==  True:
       return True
   
   else:
-      return False
-
+    return False
 
 @app.route("/", methods=['GET'])
 def index():
@@ -20,21 +50,54 @@ def index():
 
 
 @app.route("/", methods=['POST'])
-userInput = request.args.get('userEmail', 'userName', 'password', 'passwordConfirmation')
+def validate_signup():
+    usernameField = request.form['username']
+    passwordField = request.form['password']
+    passwordConfirmationField = request.form['passwordConfirmation']
+    emailField = request.form['email']
+    error = "That is not a valid input"
 
-if input_validation(userEmail, userName, password, passwordConfirmation) == True:
-    return "pass" #redirect to welcome page
+    usernameError = " "
+    passwordError = " "
+    passwordConfirmationError = " "
+    emailError = " "
 
-else:
+    if not username_validation(usernameField):
+        usernameError = error
 
-@app.route("/signup", methods=['POST'])
-def signup():
+    if not password_validation(passwordField):
+        passwordError = error
+
+    if not password_match(passwordField,passwordConfirmationField):
+        passwordConfirmationError = error 
+
+    if not email_validation(emailField):
+        emailError = error  
+  
+
+    if username_validation(usernameField) is True and password_validation(passwordField) is True and password_match(passwordField, passwordConfirmationField) is True and email_validation(emailField) is True:
+        return redirect('/welcome?username={0}'.format(usernameField))
+    
+    else:        
+        #this loads the data the user entered into the form after the error
+        if not username_validation(usernameField):
+            return render_template('signup.html', username=usernameField,email=emailField, 
+            usernameError=usernameError, passwordError=passwordError,
+            passwordConfirmationError=passwordConfirmationError, emailError=emailError,)
+  
+#got the error message to appear next to one field. how
+#can i make it appear on multiple? right now the code
+#will stop at the first return. should i nest a function
+#within this one?
 
 
-@app.route("/welcome", methods=['POST'])
+@app.route("/welcome")
 def welcome():
-    greeting = request.form('userName')
-    return '<h2>Welcome, ' + userName + '</h2>'   
+    username = request.args.get('username')
+    return render_template('welcome.html', username=username)
+    #return '<h1> Welcome {0}</h1>'.format(username)
+
+
 
 app.run()    
 

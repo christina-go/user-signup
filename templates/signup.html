@@ -1,8 +1,13 @@
 {% extends "wrapper.html" %}
 
-{% block content %}
 
-    <form action="/signup", method="post">
+{% block content %}
+<body>
+    <h1>
+        Signup
+    </h1>
+
+    <form action="/", method="post">
         <table>
             <tbody>
                 <tr>
@@ -10,8 +15,8 @@
                         <label for="username">Username</label>
                     </td>
                     <td>
-                        <input name="username" type="text" value>
-                        <span class="error">That's not a valid username</span>
+                        <input name="username" type="text" value='{{username}}' />
+                        <span class="error">{{usernameError}}</span>
                     </td>
                 </tr>
                 <tr>
@@ -19,8 +24,8 @@
                         <label for="password">Password</label>
                     </td>
                     <td>
-                        <input name="password" type="text" value>
-                        <span class="error">That's not a valid password</span>
+                        <input name="password" type="password" value='{{password}}'>
+                        <span class="error">{{passwordError}}</span>
                     </td>
                 </tr>
                 <tr>
@@ -28,8 +33,8 @@
                         <label for="passwordConfirmation">Verify Password</label>
                     </td>
                     <td>
-                        <input name="passwordConfirmation" type="text" value>
-                        <span class="error">That's not a valid password</span>
+                        <input name="passwordConfirmation" type="password" value='{{passwordConfirmation}}'>
+                        <span class="error">{{passwordConfirmationError}}</span>
                     </td>
                 </tr>
                 <tr>
@@ -37,8 +42,8 @@
                         <label for="email">Email (optional)</label>
                     </td>
                     <td>
-                        <input name="username" type="text" value>
-                        <span class="error">That's not a valid email address</span>
+                        <input name="email" type="text" value='{{email}}'>
+                        <span class="error">{{emailError}}</span>
                     </td>
                 </tr> 
                 <tr>
@@ -49,8 +54,10 @@
             </tbody>
         </table>
     </form>        
-
+</body>
 {% endblock %}
+
+
 
 
 
