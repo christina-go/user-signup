@@ -100,6 +100,7 @@ def validate_signup():
 @app.route("/welcome")
 def welcome():
     username = request.args.get('username')
-    return render_template('welcome.html', username=username)
+    return render_template('welcome.html', username=username and cgi.escape(username, quote=True))
 
-app.run()    
+if __name__ == "__main__":
+    app.run()
